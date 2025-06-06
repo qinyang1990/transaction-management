@@ -1,0 +1,39 @@
+# Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: trans-service
+  namespace: org-qy-transaction
+  labels:
+    app: trans-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: trans-service
+  template:
+    metadata:
+      labels:
+        app: trans-service
+    spec:
+      containers:
+        - name: trans-service
+          image: trans-service:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8976
+---
+# Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: trans-service
+  namespace: org-qy-transaction
+spec:
+  type: NodePort
+  ports:
+    - port: 8976
+      targetPort: 8976
+      nodePort: 30110
+  selector:
+    app: trans-service
